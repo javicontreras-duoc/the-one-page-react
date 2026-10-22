@@ -79,9 +79,18 @@ export const Header = () => {
                 {/* 3. Acciones de usuario, admin y carrito */}
                 <div className="user-cart-actions d-flex align-items-center gap-2">
                     {/* Botón directo al Dashboard de Administración */}
-                    <Link to="/admin/dashboard"></Link>
+                    <Link to="/admin/dashboard" className="btn btn-link btn-sm text-light text-decoration-none fw-semibold">
+                        Registrar usuario
+                    </Link>
+
+                {/* Botón Carrito con Contador Dinámico */}
+                <Link to="/carrito" className="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 rounded-pill px-3 ms-2">
+                    🛒 Cart <span className="badge bg-dark text-warning ms-1">{totalItems}</span>
+                </Link>
                 </div>
             </div>
         </header>
-    )
-}
+    );
+};
+
+export default Header;
