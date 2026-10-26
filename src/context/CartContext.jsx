@@ -54,7 +54,7 @@ export const CartProvider = ({ children }) => {
 
     // C) Modificar Cantidad de un Producto
     const updateQuantity = (productId, quantity) => {
-        if (newQuantity < 1) return;
+        if (quantity < 1) return;
         setCart((prevCart) => 
             prevCart.map(item =>
                 item.id === productId ? { ...item, cantidad: quantity } : item
