@@ -11,6 +11,10 @@ export const CartItem = ({ item }) => {
         currency: 'CLP' 
     }).format(amount);
 
+    const handleDelete = () => {
+        removeFromCart(item.id);
+    };
+
     return (
         <tr>
             {/* Imagen compacta manteniendo la proporción del catálogo */}
@@ -69,9 +73,10 @@ export const CartItem = ({ item }) => {
             {/* Botón Eliminar */}
             <td className="align-middle text-center">
                 <button
-                onClick={() => removeFromCart(item)}
-                className="btn btn-outline-danger btn-sm rounded-circle p-2"
-                title="Eliminar producto"
+                    type="button"
+                    onClick={handleDelete}
+                    className="btn btn-outline-danger btn-sm rounded-circle p-2"
+                    title="Eliminar producto"
                 >
                 🗑️
                 </button>

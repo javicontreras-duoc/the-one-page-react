@@ -48,9 +48,11 @@ export const CartProvider = ({ children }) => {
     };
 
     // B) Remover Producto por ID
-    const removeFromCart = (productId) => {
-        setCart((prevCart) => prevCart.filter(item => item.id !== productId));
-    }
+    const removeFromCart = (id) => { 
+        setCart((prevCart) => 
+            prevCart.filter((item) => String(item.id) !== String(id)) 
+        ); 
+    };
 
     // C) Modificar Cantidad de un Producto
     const updateQuantity = (productId, quantity) => {
