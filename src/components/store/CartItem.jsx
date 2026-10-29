@@ -3,6 +3,7 @@ import { useCart } from '../../context/CartContext';
 
 export const CartItem = ({ item }) => {
     const { updateQuantity } = useCart();
+    const { removeFromCart } = useCart();
 
     // Formateador de moneda CLP
     const formatCLP = (amount) => new Intl.NumberFormat('es-CL', { 
@@ -68,7 +69,7 @@ export const CartItem = ({ item }) => {
             {/* Botón Eliminar */}
             <td className="align-middle text-center">
                 <button
-                onClick={() => onAskDelete(item)}
+                onClick={() => removeFromCart(item)}
                 className="btn btn-outline-danger btn-sm rounded-circle p-2"
                 title="Eliminar producto"
                 >

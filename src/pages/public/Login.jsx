@@ -77,7 +77,7 @@ export const Login = ({ showToast }) => {
                                 className="mb-2"
                             />
                             <h2 className="fw-extrabold text-dark">Iniciar sesión</h2>
-                            <p lassName="text-muted small">Ingresa tus credenciales para acceder a tu cuenta</p>
+                            <p className="text-muted small">Ingresa tus credenciales para acceder a tu cuenta</p>
                         </div>
 
                         {/* Formulario */}

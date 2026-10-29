@@ -78,7 +78,7 @@ export const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.CartProvider
+        <CartContext.Provider
             value={{
                 cart,
                 addToCart,
@@ -90,7 +90,7 @@ export const CartProvider = ({ children }) => {
             }}
         >
             {children}
-        </CartContext.CartProvider>
+        </CartContext.Provider>
     );
 };
 

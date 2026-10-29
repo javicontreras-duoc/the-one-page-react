@@ -14,7 +14,7 @@ export const ProductCard = ({ product, showToast }) => {
     };
 
     // Formato de precio en CLP
-    const precioformateado = new Intl.NumberFormat('es-CL', {
+    const precioFormateado = new Intl.NumberFormat('es-CL', {
         style: 'currency',
         currency: 'CLP'
     }).format(product.precio);

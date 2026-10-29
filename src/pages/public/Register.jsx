@@ -1,7 +1,7 @@
-import React from 'react';
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+// Regiones y Comunas de Chile
 const REGIONES_COMUNAS = {
   'Región de Arica y Parinacota': [
     'Arica', 'Camarones', 'Putre', 'General Lagos'
@@ -111,283 +111,262 @@ const REGIONES_COMUNAS = {
   ]
 };
 
+// Algoritmo Módulo 11 para validación de RUN chileno
 const validarRutChileno = (rutCompleto) => {
-    const limpio = rutCompleto.replace(/[^0-9kK]/g, '').toUpperCase();
-    if (!/^\d{7,8}[0-9K]$/.test(limpio)) return false;
+  if (!rutCompleto) return false;
+  const limpio = rutCompleto.replace(/[\.\-]/g, '').toUpperCase();
+  if (limpio.length < 8 || limpio.length > 9) return false;
 
-    const cuerpo = limpio.slice(0, -1);
-    const dvIngresado = limpio.slice(-1);
+  const cuerpo = limpio.slice(0, -1);
+  const dvIngresado = limpio.slice(-1);
 
-    let suma = 0; 
-    let multiplicador = 2;
+  if (!/^\d+$/.test(cuerpo)) return false;
 
-    for (let i = cuerpo.length - 1; i >= 0; i--) { 
-        suma += cuerpo.charCodeAt(i) - 48 * multiplicador;
-        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1; 
-    }
+  let suma = 0;
+  let multiplicador = 2;
 
-    const resto = 11 - (suma % 11);
-    const dvCalculado = resto === 11 ? '0' : resto === 10 ? 'K' : String(resto);
+  for (let i = cuerpo.length - 1; i >= 0; i--) {
+    suma += parseInt(cuerpo.charAt(i), 10) * multiplicador;
+    multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+  }
 
-    return dvIngresado === dvCalculado;
-}
+  const resto = 11 - (suma % 11);
+  let dvCalculado = '0';
+  if (resto === 11) dvCalculado = '0';
+  else if (resto === 10) dvCalculado = 'K';
+  else dvCalculado = resto.toString();
+
+  return dvIngresado === dvCalculado;
+};
 
 export const Register = ({ showToast }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        nombre: '', 
-        apellido: '',
-        email: '', 
-        rut: '',
-        password: '',
-        confirmPassword: '',
-        region: '', 
-        comuna: '',
-    });
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    rut: '',
+    password: '',
+    confirmPassword: '',
+    region: '',
+    comuna: ''
+  });
 
-    const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-        if (name === 'region') { 
-            setFormData({ ...formData, region: value, comuna: '' }); 
-        } else { 
-            setFormData({ ...formData, [name]: value }); 
-        }
+    if (name === 'region') {
+      setFormData((prev) => ({ ...prev, region: value, comuna: '' }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
 
-        if (errors[name]) { 
-            setErrors({ ...errors, [name]: '' }); 
-        }
-    };
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+  };
 
-    const validarFormulario = () => {
-        const nuevosErrores = {};
+  const validarFormulario = () => {
+    const nuevosErrores = {};
 
-        // 1. Nombre obligatorio
-        if (!formData.nombre.trim()) {
-            nuevosErrores.nombre = 'El nombre es obligatorio.';
-        }
-        if (!formData.apellido.trim()) {
-            nuevosErrores.apellido = 'El apellido es obligatorio.';
-        }
+    if (!formData.nombre.trim()) nuevosErrores.nombre = 'El nombre es obligatorio.';
+    if (!formData.apellido.trim()) nuevosErrores.apellido = 'El apellido es obligatorio.';
 
-        // 2. Correo electrónico válido
-        if (!formData.email.trim()) {
-            nuevosErrores.email = 'El correo electrónico es obligatorio.';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            nuevosErrores.email = 'Ingrese un formato de correo válido (ej: usuario@gmail.cl).';
-        }
+    if (!formData.email.trim()) {
+      nuevosErrores.email = 'El correo electrónico es obligatorio.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      nuevosErrores.email = 'Formato de correo no válido.';
+    }
 
-        // Validación de RUN con algoritmo Módulo 11
-        if (!formData.rut.trim()) { 
-            nuevosErrores.rut = 'El RUN es obligatorio.'; 
-        } else if (!validarRutChileno(formData.rut)) { 
-            nuevosErrores.rut = 'RUN no válido o dígito verificador incorrecto (ej: 12345678K).'; 
-        }
+    if (!formData.rut.trim()) {
+      nuevosErrores.rut = 'El RUN es obligatorio.';
+    } else if (!validarRutChileno(formData.rut)) {
+      nuevosErrores.rut = 'RUN no válido o dígito verificador incorrecto (ej: 12345678K).';
+    }
 
-        // Contraseña (4-10 caracteres)
-        if (!formData.password) { 
-            nuevosErrores.password = 'La contraseña es obligatoria.'; 
-        } else if (formData.password.length < 4 || formData.password.length > 10) { 
-            nuevosErrores.password = 'Debe tener entre 4 y 10 caracteres.'; 
-        }
+    if (!formData.password) {
+      nuevosErrores.password = 'La contraseña es obligatoria.';
+    } else if (formData.password.length < 4 || formData.password.length > 10) {
+      nuevosErrores.password = 'Debe tener entre 4 y 10 caracteres.';
+    }
 
-        // Confirmación de Contraseña
-        if (formData.password !== formData.confirmPassword) { 
-            nuevosErrores.confirmPassword = 'Las contraseñas no coinciden.'; 
-        }
+    if (formData.password !== formData.confirmPassword) {
+      nuevosErrores.confirmPassword = 'Las contraseñas no coinciden.';
+    }
 
-        if (!formData.region) nuevosErrores.region = 'Seleccione una región.';
-        if (!formData.comuna) nuevosErrores.comuna = 'Seleccione una comuna.';
+    if (!formData.region) nuevosErrores.region = 'Seleccione una región.';
+    if (!formData.comuna) nuevosErrores.comuna = 'Seleccione una comuna.';
 
-        setErrors(nuevosErrores);
-        return Object.keys(nuevosErrores).length === 0;
-    };
+    setErrors(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-        if (!validarFormulario()) {
-            if (showToast) showToast('Por favor, corrige los errores en el formulario', 'error');
-            return;
-        }
+    if (!validarFormulario()) {
+      if (showToast) showToast('Por favor, corrige los errores del formulario', 'error');
+      return;
+    }
 
-        setEnviado(true);
-        if (showToast) showToast('¡Cuenta creada exitosamente! Inicia sesión ahora.', 'success');
-        navigate('/login');
-    };
+    if (showToast) showToast('¡Cuenta creada exitosamente! Inicia sesión ahora.', 'success');
+    navigate('/login');
+  };
 
-    return (
-        <div className="container py-4">
-            <div className="row justify-content-center">
-                <div className="col-12 col-md-10 col-lg-7">
-                    <div className="card shadow-sm border-0 bg-white p-4 p-md-5">
-                        
-                        <div className="text-center mb-4">
-                            <h2 className="fw-extrabold text-dark">
-                                Registro de Nuevo usuario
-                            </h2>
-                            <p className="text-muted small">
-                                Crea tu cuenta para comprar y gestionar tus pedidos
-                            </p>
-                        </div>
-                    
-                        <form onSubmit={handleSubmit} noValidate>
-                            <div className="row g-3">
+  // Obtener lista segura de comunas para la región seleccionada
+  const comunasDisponibles = formData.region && REGIONES_COMUNAS[formData.region]
+    ? REGIONES_COMUNAS[formData.region]
+    : [];
 
-                                <div div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Nombre (*) 
-                                    </label>
-                                    <input
-                                        type="text" 
-                                        name="nombre" 
-                                        className={`form-control ${errors.nombre ? 'is-invalid' : ''}`} 
-                                        placeholder="Ej. Juan" 
-                                        value={formData.nombre} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.nombre && <div className="invalid-feedback fw-bold">{errors.nombre}</div>}
-                                </div>
-
-                                <div div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Apellido (*) 
-                                    </label>
-                                    <input
-                                        type="text" 
-                                        name="apellido" 
-                                        className={`form-control ${errors.apellido ? 'is-invalid' : ''}`} 
-                                        placeholder="Ej. Pérez" 
-                                        value={formData.apellido} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.apellido && <div className="invalid-feedback fw-bold">{errors.apellido}</div>}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Correo Electrónico (*) 
-                                    </label>
-                                    <input
-                                        type="email" 
-                                        name="email" 
-                                        className={`form-control ${errors.email ? 'is-invalid' : ''}`} 
-                                        placeholder="ejemplo@gmail.cl" 
-                                        value={formData.email} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.email && <div className="invalid-feedback fw-bold">{errors.email}</div>}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        RUT (*) 
-                                    </label>
-                                    <input
-                                        type="text" 
-                                        name="rut" 
-                                        className={`form-control ${errors.rut ? 'is-invalid' : ''}`} 
-                                        placeholder="12345678K (Sin puntos ni guión)" 
-                                        value={formData.rut} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.rut && <div className="invalid-feedback fw-bold">{errors.rut}</div>}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Contraseña (*) 
-                                    </label>
-                                    <input
-                                        type="password" 
-                                        name="password" 
-                                        className={`form-control ${errors.password ? 'is-invalid' : ''}`} 
-                                        placeholder="4 a 10 caracteres" 
-                                        value={formData.password} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.password && <div className="invalid-feedback fw-bold">{errors.password}</div>}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Confirmar Contraseña (*) 
-                                    </label>
-                                    <input
-                                        type="password" 
-                                        name="confirmPassword" 
-                                        className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`} 
-                                        placeholder="Repite tu contraseña" 
-                                        value={formData.confirmPassword} 
-                                        onChange={handleChange}
-                                    />
-                                    {errors.confirmPassword && <div className="invalid-feedback fw-bold">{errors.confirmPassword}</div>}
-                                </div>
-                                
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Región (*) 
-                                    </label>
-                                    <select
-                                        name="region"
-                                        className={`form-select ${errors.region ? 'is-invalid' : ''}`}
-                                        value={formData.region}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">-- Seleccionar --</option>
-                                        {Object.keys(REGIONES_COMUNAS).map((reg) => (
-                                            <option key={reg} value="{reg}">{reg}</option>
-                                        ))}
-                                    </select>
-                                    {errors.region && <div className="invalid-feedback fw-bold">{errors.region}</div>}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label fw-semibold text-dark">
-                                        Comuna (*) 
-                                    </label>
-                                    <select
-                                        name="comuna"
-                                        className={`form-select ${errors.comuna ? 'is-invalid' : ''}`}
-                                        value={formData.comuna}
-                                        onChange={handleChange}
-                                        disabled={!formData.region}
-                                    >
-                                        <option value="">-- Seleccionar --</option>
-                                        {formData.region && REGIONES_COMUNAS[formData.region].map((com) => (
-                                            <option key={com} value="{com}">{com}</option>
-                                        ))}
-                                    </select>
-                                    {errors.comuna && <div className="invalid-feedback fw-bold">{errors.comuna}</div>}
-                                </div>
-
-                                <div className="col-12 pt-3">
-                                    <button
-                                        type="submit" 
-                                        className="btn btn-warning btn-lg w-100 rounded-pill fw-bold text-dark shadow-sm hover-amber"
-                                    >
-                                        Registrar Cuenta
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div className="text-center border-top pt-3 mt-4">
-                            <span className="text-muted small">¿Ya tienes una cuenta?</span>
-                            <Link to="/login" className="fw-bold text-dark text-decoration-none small">
-                                Inicia sesión aquí
-                            </Link>
-                        </div>
-                        
-                    </div>
-                </div>
+  return (
+    <div className="container py-4">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-10 col-lg-7">
+          <div className="card shadow-sm border-0 bg-white p-4 p-md-5">
+            
+            <div className="text-center mb-4">
+              <h2 className="fw-extrabold text-dark">Registro de Nuevo Usuario</h2>
+              <p className="text-muted small">Crea tu cuenta para comprar y gestionar tus pedidos</p>
             </div>
+
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="row g-3">
+                
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Nombre (*)</label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
+                    value={formData.nombre}
+                    onChange={handleChange}
+                  />
+                  {errors.nombre && <div className="invalid-feedback fw-bold">{errors.nombre}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Apellido (*)</label>
+                  <input
+                    type="text"
+                    name="apellido"
+                    className={`form-control ${errors.apellido ? 'is-invalid' : ''}`}
+                    value={formData.apellido}
+                    onChange={handleChange}
+                  />
+                  {errors.apellido && <div className="invalid-feedback fw-bold">{errors.apellido}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Correo Electrónico (*)</label>
+                  <input
+                    type="email"
+                    name="email"
+                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                    placeholder="usuario@duoc.cl"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  {errors.email && <div className="invalid-feedback fw-bold">{errors.email}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">RUN / RUT (*)</label>
+                  <input
+                    type="text"
+                    name="rut"
+                    className={`form-control ${errors.rut ? 'is-invalid' : ''}`}
+                    placeholder="12345678K (Sin puntos ni guión)"
+                    value={formData.rut}
+                    onChange={handleChange}
+                  />
+                  {errors.rut && <div className="invalid-feedback fw-bold">{errors.rut}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Contraseña (*)</label>
+                  <input
+                    type="password"
+                    name="password"
+                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                    placeholder="4 a 10 caracteres"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  {errors.password && <div className="invalid-feedback fw-bold">{errors.password}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Confirmar Contraseña (*)</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  {errors.confirmPassword && <div className="invalid-feedback fw-bold">{errors.confirmPassword}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Región (*)</label>
+                  <select
+                    name="region"
+                    className={`form-select ${errors.region ? 'is-invalid' : ''}`}
+                    value={formData.region}
+                    onChange={handleChange}
+                  >
+                    <option value="">-- Seleccionar --</option>
+                    {Object.keys(REGIONES_COMUNAS).map((reg) => (
+                      <option key={reg} value={reg}>{reg}</option>
+                    ))}
+                  </select>
+                  {errors.region && <div className="invalid-feedback fw-bold">{errors.region}</div>}
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">Comuna (*)</label>
+                  <select
+                    name="comuna"
+                    className={`form-select ${errors.comuna ? 'is-invalid' : ''}`}
+                    value={formData.comuna}
+                    onChange={handleChange}
+                    disabled={!formData.region || comunasDisponibles.length === 0}
+                  >
+                    <option value="">-- Seleccionar --</option>
+                    {comunasDisponibles.map((com) => (
+                      <option key={com} value={com}>{com}</option>
+                    ))}
+                  </select>
+                  {errors.comuna && <div className="invalid-feedback fw-bold">{errors.comuna}</div>}
+                </div>
+
+                <div className="col-12 pt-3">
+                  <button
+                    type="submit"
+                    className="btn btn-warning btn-lg w-100 rounded-pill fw-bold text-dark shadow-sm hover-amber"
+                  >
+                    Registrar Cuenta
+                  </button>
+                </div>
+
+              </div>
+            </form>
+
+            <div className="text-center border-top pt-3 mt-4">
+              <span className="text-muted small">¿Ya tienes una cuenta? </span>
+              <Link to="/login" className="fw-bold text-dark text-decoration-none small">
+                Inicia sesión aquí
+              </Link>
+            </div>
+
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Register;

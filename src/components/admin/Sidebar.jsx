@@ -8,18 +8,7 @@ export const Sidebar = () => {
             style={{ minWidth: '240px' }}
         >
             <div>
-                {/* Encabezado del Admin */}
-                <div className="text-center pb-3 mb-3 border-bottom border-secondary">
-                    <Link to="/" className="text-decoration-none">
-                        <img
-                            src="/img/logo.png" 
-                            alt="The One Page Logo" 
-                            style={{ height: '45px', objectFit: 'contain' }} 
-                            className="mb-2"
-                        />
-                    </Link>
-                    <small className="text-muted">The One Page</small>
-                </div>
+                
 
                 {/* Menú de Navegación Lateral */}
                 <ul className="nav nav-pills flex-column gap-2 mb-auto">

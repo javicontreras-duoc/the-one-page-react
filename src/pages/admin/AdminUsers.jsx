@@ -1,6 +1,5 @@
 import React, { useState } from 'react'; 
-import Sidebar, { Sidebar } from '../../components/admin/Sidebar';
-import React from 'react';
+import Sidebar from '../../components/admin/Sidebar';
 
 export const AdminUsers = ({ showToast }) => { 
     const [users, setUsers] = useState([ 
