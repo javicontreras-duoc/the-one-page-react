@@ -3,7 +3,7 @@ import ProductGrid from '../../components/store/ProductGrid';
 
 export const Products = ({ products = [], showToast }) => {
     return (
-        <div className="container py-4">
+        <div className="container">
             {/* Encabezado del Catálogo */}
             <div className="bg-dark text-white p-4 rounded-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 border-start border-warning border-5">
                 <div>

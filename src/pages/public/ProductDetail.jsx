@@ -14,7 +14,7 @@ export const ProductDetail = ({ products = [], showToast }) => {
 
     if (!product) {
         return (
-            <div className="container py-5 text-center">
+            <div className="container text-center">
                 <div className="card shadow-sm p-5 border-0 max-w-600 mx-auto bg-white">
                     <div className="fs-1 mb-2">🔍</div>
                     <h3 className="fw-bold text-dark">Manga no encontrado</h3>
@@ -52,7 +52,7 @@ export const ProductDetail = ({ products = [], showToast }) => {
     };
 
     return (
-        <div className="container py-4">
+        <div className="container">
             {/* Botón Volver */}
             <div className="mb-4">
                 <Link to="/productos" className="btn btn-outline-dark btn-sm rounded-pill fw-semibold">

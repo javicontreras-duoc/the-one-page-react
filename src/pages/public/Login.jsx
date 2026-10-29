@@ -64,7 +64,7 @@ export const Login = ({ showToast }) => {
     };
 
     return (
-        <div className="container py-5">
+        <div className="container">
             <div className="row justify-content-center">
                 <div className="col-12 col-md-8 col-lg-5">
                     <div className="card shadow-sm border-0 bg-white p-4 p-md-5">

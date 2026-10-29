@@ -9,7 +9,7 @@ export const Home = ({ products = [], showToast }) => {
         <div className="home-page">
             {/* 1\. Hero Banner Principal \*/}
             <section className="hero-banner bg-dark text-white py-5 px-4 mb-5 rounded-3 position-relative overflow-hidden border-bottom border-warning border-4">
-                <div className="container py-4">
+                <div className="container">
                     <div className="row align-items-center">
                         <div className="col-12 col-lg-7">
                             <span className="badge bg-warning text-dark fw-bold mb-2 px-3 py-2 rounded-pill text-uppercase">

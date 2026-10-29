@@ -8,7 +8,7 @@ export const Offers = ({ products = [], showToast }) => {
     }));
 
     return (
-        <div className="container py-4">
+        <div className="container">
             <div className="bg-danger text-white p-4 rounded-3 mb-4 border-start border-warning border-5">
                 <h1 className="fw-extrabold text-warning mb-1">🔥 Promociones y Ofertas Especiales</h1>
                 <p className="text-white mb-0 small">!Aprovecha hasta un 20% de descuento en tomos seleccionados esta semana!</p>

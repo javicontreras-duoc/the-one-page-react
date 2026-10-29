@@ -222,7 +222,7 @@ export const Register = ({ showToast }) => {
     : [];
 
   return (
-    <div className="container py-4">
+    <div className="container">
       <div className="row justify-content-center">
         <div className="col-12 col-md-10 col-lg-7">
           <div className="card shadow-sm border-0 bg-white p-4 p-md-5">

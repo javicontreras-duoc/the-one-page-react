@@ -207,7 +207,7 @@ export const Checkout = ({ showToast }) => {
   // Si el carrito está vacío o no es válido
   if (!cart || cart.length === 0) {
     return (
-      <div className="container py-5 text-center">
+      <div className="container text-center">
         <div className="card shadow-sm p-5 border-0 max-w-600 mx-auto bg-white">
           <div className="fs-1 mb-2">🛍️</div>
           <h3 className="fw-bold text-dark">No hay productos para procesar el pago</h3>
@@ -221,7 +221,7 @@ export const Checkout = ({ showToast }) => {
   }
 
   return (
-    <div className="container py-4">
+    <div className="container">
       <h1 className="fw-extrabold text-dark mb-4">💳 Finalizar Compra (Checkout)</h1>
 
       <form onSubmit={handleSubmitOrder} noValidate>

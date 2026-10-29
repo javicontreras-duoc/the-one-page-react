@@ -14,7 +14,7 @@ export const Success = () => {
     // Si se intenta ingresar directamente a /exito sin haber comprado, redirigir o mostrar aviso
     if (!order) {
         return (
-            <div className="container py-5 text-center">
+            <div className="container text-center">
                 <div className="card shadow-sm p-5 border-0 max-w-600 mx-auto bg-white">
                 <div className="fs-1 mb-2">⚠️</div>
                 <h3 className="fw-bold text-dark">No hay ningún comprobante activo</h3>
@@ -30,7 +30,7 @@ export const Success = () => {
     }
 
     return (
-    <div className="container py-4">
+    <div className="container">
       <div className="max-w-800 mx-auto">
         
         {/* 1. Encabezado de Confirmación */}

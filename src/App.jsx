@@ -120,7 +120,7 @@ function App() {
                 />
 
                 {/* Contenedor Principal de la App */}
-                <main className="main-content min-vh-100 py-4">
+                <main className="main-content min-vh-100">
                     <Routes>
                         <Route path="/" element={<Home products={products} showToast={showToast} />} />
                         <Route path="/productos" element={<Products products={products} showToast={showToast} />} />

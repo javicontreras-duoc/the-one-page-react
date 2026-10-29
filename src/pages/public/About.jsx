@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const About = () => {
     return (
-        <div className="container py-4">
+        <div className="container">
             {/* 1. Encabezado de la Sección */}
             <div className="bg-dark text-white p-4 p-md-5 rounded-3 mb-5 border-start border-warning border-5 position-relative overflow-hidden">
                 <div className="row align-items-center">

@@ -5,7 +5,7 @@ export const BlogDetail= () => {
     const { id } = useParams();
 
     return (
-        <div className="container py-4">
+        <div className="container">
             <div className="max-w-800 mx-auto bg-white p-4 p-md-5 rounded shadow-sm">
                 <Link to="/blogs" className="btn btn-outline-dark btn-sm rounded-pill mb-4">
                     ← Volver a Blogs

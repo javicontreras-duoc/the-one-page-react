@@ -33,7 +33,7 @@ export const Cart = ({ showToast }) => {
 
     if (cart.length === 0) {
         return (
-            <div className="container py-5 text-center">
+            <div className="container text-center">
         <div className="card shadow-sm p-5 max-w-600 mx-auto border-0">
           <div className="fs-1 mb-3">🛒</div>
           <h2 className="fw-bold text-dark mb-2">Tu carrito está vacío</h2>
@@ -51,7 +51,7 @@ export const Cart = ({ showToast }) => {
   }
 
   return (
-    <div className="container py-4">
+    <div className="container">
       <h1 className="fw-extrabold text-dark mb-4">🛒 Carrito de Compras</h1>
 
       <div className="row g-4">

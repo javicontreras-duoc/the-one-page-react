@@ -20,7 +20,7 @@ export const Blogs = () => {
     ];
 
     return (
-        <div className="container py-4">
+        <div className="container">
             <div className="bg-dark text-white p-4 rounded-3 mb-4 border-start border-warning border-5">
                 <h1 className="fw-extrabold text-warning mb-1">📰 Noticias y Curiosidades</h1>
                 <p className="text-light mb-0 small">Novedades sobre el mundo del manga, recomendaciones e historias.</p>

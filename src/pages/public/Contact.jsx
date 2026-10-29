@@ -73,7 +73,7 @@ export const Contact = ({ showToast }) => {
     };
 
     return (
-        <div className="container py-4">
+        <div className="container">
             {/* Encabezado de Sección */}
             <div className="bg-dark text-white p-4 rounded-3 mb-4 border-start border-warning border-5">
                 <h1 className="fw-extrabold text-warning mb-1">

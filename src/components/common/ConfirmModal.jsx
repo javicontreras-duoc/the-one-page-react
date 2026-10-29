@@ -9,7 +9,7 @@ export const ConfirmModal = ({ title, message, onConfirm, onCancel }) => {
                         <h5 className="modal-title fw-bold text-warning">{title}</h5>
                         <button type="button" className="btn-close btn-close-white" onClick={onCancel}></button>
                     </div>
-                    <div className="modal-body py-4">
+                    <div className="modal-body">
                         <p className="fs-6 text-dark mb-0">{message}</p>
                     </div>
                     <div className="modal-footer bg-light">
