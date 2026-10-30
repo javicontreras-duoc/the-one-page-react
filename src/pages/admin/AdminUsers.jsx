@@ -1,12 +1,19 @@
-import React, { useState } from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import Sidebar from '../../components/admin/Sidebar';
 
 export const AdminUsers = ({ showToast }) => { 
-    const [users, setUsers] = useState([ 
-        { id: 1, nombre: 'Javiera Contreras', email: 'javiera@duoc.cl', rut: '19876543K', rol: 'Administrador' }, 
-        { id: 2, nombre: 'Pedro Pascal', email: 'pedro@profesor.duoc.cl', rut: '154321098', rol: 'Vendedor' }, 
-        { id: 3, nombre: 'Cliente Demo', email: 'cliente@gmail.com', rut: '123456785', rol: 'Cliente' }, 
-    ]);
+    const [users, setUsers] = useState(() => {
+        try {
+            const savedUsers = localStorage.getItem('system_users');
+            return savedUsers ? JSON.parse(savedUsers) : [];
+        } catch (error) {
+            return [];
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem('system_users', JSON.stringify(users));
+    }, [users]);
 
     const [showModal, setShowModal] = useState(false);
     const [editingUser, setEditingUser] = useState(null);

@@ -82,10 +82,10 @@ function App() {
     const [products, setProducts] = useState(() => { 
         try { 
             const savedProducts = localStorage.getItem('manga_products'); 
-            return savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS; 
+            return savedProducts ? JSON.parse(savedProducts) : [];
         } catch (error) { 
             console.error('Error cargando inventario:', error); 
-            return INITIAL_PRODUCTS; 
+            return []; 
         } 
     });
 
