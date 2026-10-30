@@ -11,7 +11,7 @@ export const ProductGrid = ({ products =[], showToast }) => {
     // Filtrado dinámico por categoría y por texto de búsqueda
     const filteredProducts = products.filter((product) => {
         const matchesCategory =
-            selectedCategory === 'Todas' || product.category === selectedCategory;
+            selectedCategory === 'Todas' || product.categoria === selectedCategory;
         const matchesSearch = 
             product.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (product.codigo && product.codigo.toLowerCase().includes(searchQuery.toLowerCase()));

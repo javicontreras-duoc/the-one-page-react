@@ -42,6 +42,25 @@ export const Home = ({ products = [], showToast }) => {
                 </div>
             </section>
 
+            {/* 3. Sección de Mangas Destacados */}
+            <section id="destacados" className="featured-section mb-5 container">
+                <div className="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+                    <div>
+                        <h2 className="fw-extrabold text-dark mb-1">🔥 Destacados de la Semana</h2>
+                        <p className="text-muted mb-0">Los tomos más leídos por nuestra comunidad.</p>
+                    </div>
+                    <Link to="/productos" className="btn btn-link text-warning fw-bold text-decoration-none bg-dark px-3 py-1 rounded-pill">
+                        Ver Todos →
+                    </Link>
+                </div>
+
+                <div className="row">
+                    {featuredProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} showToast={showToast} />
+                    ))}
+                </div>
+            </section>
+
             {/* 2. Beneficios de la Tienda */}
             <section className="features-section mb-5">
                 <div className="container">
@@ -68,25 +87,6 @@ export const Home = ({ products = [], showToast }) => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            {/* 3. Sección de Mangas Destacados */}
-            <section id="destacados" className="featured-section mb-5 container">
-                <div className="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
-                    <div>
-                        <h2 className="fw-extrabold text-dark mb-1">🔥 Destacados de la Semana</h2>
-                        <p className="text-muted mb-0">Los tomos más leídos por nuestra comunidad.</p>
-                    </div>
-                    <Link to="/productos" className="btn btn-link text-warning fw-bold text-decoration-none bg-dark px-3 py-1 rounded-pill">
-                        Ver Todos →
-                    </Link>
-                </div>
-
-                <div className="row">
-                    {featuredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} showToast={showToast} />
-                    ))}
                 </div>
             </section>
         </div>
