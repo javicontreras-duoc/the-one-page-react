@@ -198,6 +198,14 @@ export const Checkout = ({ showToast }) => {
       total: getCartTotal()
     };
 
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('manga_orders') || '[]');
+      existingOrders.push(orderData);
+      localStorage.getItem('manga_orders', JSON.stringify(existingOrders));
+    } catch (error) {
+      console.error('Error al guardar la orden en historial:', error);
+    }
+
     clearCart();
     if (showToast) showToast('¡Pedido realizado con éxito!', 'success');
 
