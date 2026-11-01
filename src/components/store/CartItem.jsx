@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCart } from '../../context/CartContext';
 
-export const CartItem = ({ item }) => {
+export const CartItem = ({ item, onAskDelete }) => {
     const { updateQuantity } = useCart();
     const { removeFromCart } = useCart();
 
@@ -74,7 +74,7 @@ export const CartItem = ({ item }) => {
             <td className="align-middle text-center">
                 <button
                     type="button"
-                    onClick={handleDelete}
+                    onClick={ () => onAskDelete(item)}
                     className="btn btn-outline-danger btn-sm rounded-circle p-2"
                     title="Eliminar producto"
                 >

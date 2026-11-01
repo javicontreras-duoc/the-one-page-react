@@ -13,7 +13,7 @@ export const Products = ({ products = [], showToast }) => {
                     </p>
                 </div>
                 <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill fw-bold">
-                    {products.length} Tomos Disponibles
+                    {products.length} Tomo(s) Disponibles
                 </span>
             </div>
 

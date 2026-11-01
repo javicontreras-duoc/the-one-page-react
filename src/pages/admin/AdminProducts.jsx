@@ -1,11 +1,13 @@
 import React, { useState } from 'react'; 
 import Sidebar from '../../components/admin/Sidebar';
 import { db, collection, addDoc, doc, updateDoc, deleteDoc } from '../../services/firebase';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 export const AdminProducts = ({ products = [], setProducts, showToast }) => {
     const [showModal, setShowModal] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [deletingProduct, setDeletingProduct] = useState(null);
 
     const [formData, setFormData] = useState({ 
         codigo: '', 
@@ -58,21 +60,25 @@ export const AdminProducts = ({ products = [], setProducts, showToast }) => {
         setEditingProduct(null);
     };
 
-    const handleDelete = async (id) => {
-        const confirmar = window.confirm(`¿Estás seguro de eliminar "${nombre}" del catálogo?`);
-        if (!confirmar) return;
+    const handleAskDelete = (product) => {
+        setDeletingProduct(product);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deletingProduct) return;
 
         try {
-            await deleteDoc(doc(db, 'productos', id));
+            await deleteDoc(doc(db, 'productos', deletingProduct.id));
 
-            setProducts((prev) => prev.filter((p) => p.id !== id));
-
+            setProducts((prev) => prev.filter((p) => p.id !== deletingProduct.id));
             if (showToast) showToast('Manga eliminado de la base de datos', 'warning');
         } catch (error) {
             console.error('Error al eliminar en Firebase:', error);
             if (showToast) showToast('Error al eliminar el producto', 'error');
+        } finally {
+            setDeletingProduct(null);
         }
-    };
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -162,7 +168,7 @@ export const AdminProducts = ({ products = [], setProducts, showToast }) => {
                             <tbody>
                                 {products.length > 0 ? (
                                     products.map((p) => (
-                                        <tr>
+                                        <tr key={p.id}>
                                             <td>
                                                 <img
                                                     src={p.imagen || 'https://via.placeholder.com/50'}
@@ -204,7 +210,7 @@ export const AdminProducts = ({ products = [], setProducts, showToast }) => {
                                                     ✏️ Editar
                                                 </button>
                                                 <button 
-                                                    onClick={() => handleDelete(p.id, p.nombre)} 
+                                                    onClick={() => handleAskDelete(p)} 
                                                     className="btn btn-sm btn-outline-danger"
                                                     title="Eliminar producto"
                                                 >
@@ -247,127 +253,127 @@ export const AdminProducts = ({ products = [], setProducts, showToast }) => {
                                             <div className="col-md-4">
                                                 <label className="form-label fw-semibold">
                                                     Código (*)
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={formData.codigo}
+                                                        onChange={(e) => setFormData({ ...formData, codigo: e.target.value })}
+                                                        required
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    value={formData.codigo}
-                                                    onChange={(e) => setFormData({ ...formData, codigo: e.target.value })}
-                                                    required
-                                                />
                                             </div>
 
                                             <div className="col-md-8">
                                                 <label className="form-label fw-semibold">
                                                     Título del Manga (*)
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="Ej. Chainsaw Man Vol. 01"
+                                                        value={formData.nombre}
+                                                        onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                                                        required
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Ej. Chainsaw Man Vol. 01"
-                                                    value={formData.nombre}
-                                                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                                                    required
-                                                />
                                             </div>
 
                                             <div className="col-md-4">
                                                 <label className="form-label fw-semibold">
                                                     Categoría / Demografía (*)
+                                                    <select
+                                                        className="form-select"
+                                                        value={formData.categoria}
+                                                        onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+                                                    >
+                                                        <option value="Shonen">Shonen</option>
+                                                        <option value="Seinen">Seinen</option>
+                                                        <option value="Shojo">Shojo</option>
+                                                        <option value="Josei">Josei</option>
+                                                    </select>
                                                 </label>
-                                                <select
-                                                    className="form-select"
-                                                    value={formData.categoria}
-                                                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                                                >
-                                                    <option value="Shonen">Shonen</option>
-                                                    <option value="Seinen">Seinen</option>
-                                                    <option value="Shojo">Shojo</option>
-                                                    <option value="Josei">Josei</option>
-                                                </select>
                                             </div>
 
                                             <div className="col-md-4">
                                                 <label className="form-label fw-semibold">
                                                     Precio en CLP (*)
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        placeholder="8990"
+                                                        value={formData.precio}
+                                                        onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
+                                                        required
+                                                        min = '0'
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    placeholder="8990"
-                                                    value={formData.precio}
-                                                    onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
-                                                    required
-                                                    min = '0'
-                                                />
                                             </div>
 
                                             <div className="col-md-4">
                                                 <label className="form-label fw-semibold">
                                                     Stock Inicial (*)
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        placeholder="10"
+                                                        value={formData.stock}
+                                                        onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                                                        required
+                                                        min = '0'
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    placeholder="10"
-                                                    value={formData.stock}
-                                                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                                                    required
-                                                    min = '0'
-                                                />
                                             </div>
 
                                             <div className="col-md-6">
                                                 <label className="form-label fw-semibold">
                                                     Autor / Mangaka (*)
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="Ej. Tatsuki Fujimoto"
+                                                        value={formData.autor}
+                                                        onChange={(e) => setFormData({ ...formData, autor: e.target.value })}
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Ej. Tatsuki Fujimoto"
-                                                    value={formData.autor}
-                                                    onChange={(e) => setFormData({ ...formData, autor: e.target.value })}
-                                                />
                                             </div>
 
                                             <div className="col-md-6">
                                                 <label className="form-label fw-semibold">
                                                     Editorial (*)
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="Ej. Panini Manga / IVREA"
+                                                        value={formData.editorial}
+                                                        onChange={(e) => setFormData({ ...formData, editorial: e.target.value })}
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Ej. Panini Manga / IVREA"
-                                                    value={formData.editorial}
-                                                    onChange={(e) => setFormData({ ...formData, editorial: e.target.value })}
-                                                />
                                             </div>
 
                                             <div className="col-12">
                                                 <label className="form-label fw-semibold">
                                                     URL de la Portada (Imagen)
+                                                    <input
+                                                        type="url"
+                                                        className="form-control"
+                                                        placeholder="https://..."
+                                                        value={formData.imagen}
+                                                        onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
+                                                    />
                                                 </label>
-                                                <input
-                                                    type="url"
-                                                    className="form-control"
-                                                    placeholder="https://..."
-                                                    value={formData.imagen}
-                                                    onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
-                                                />
                                             </div>
 
                                             <div className="col-12">
                                                 <label className="form-label fw-semibold">
                                                     Sinopsis / Descripción
+                                                    <textarea
+                                                        className="form-control"
+                                                        rows="3"
+                                                        placeholder="Breve reseña del tomo..."
+                                                        value={formData.descripcion}
+                                                        onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                                                        required
+                                                    ></textarea>
                                                 </label>
-                                                <textarea
-                                                    className="form-control"
-                                                    rows="3"
-                                                    placeholder="Breve reseña del tomo..."
-                                                    value={formData.descripcion}
-                                                    onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                                                    required
-                                                ></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -393,6 +399,16 @@ export const AdminProducts = ({ products = [], setProducts, showToast }) => {
                             </div>
                         </div>
                     </div>
+                )}
+
+                {/* Modal de Confirmación de Eliminación */}
+                {deletingProduct && (
+                    <ConfirmModal
+                        title="¿Eliminar manga del catálogo?"
+                        message={`¿Estás seguro de que deseas eliminar permanentemente "${deletingProduct.nombre}" de la base de datos? Esta acción no se puede deshacer.`}
+                        onConfirm={handleConfirmDelete}
+                        onCancel={() => setDeletingProduct(null)}
+                    />
                 )}
             </main>
         </div>

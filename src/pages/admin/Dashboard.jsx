@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../components/admin/Sidebar';
 import MetricCard from '../../components/admin/MetricCard';
-import { collection } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../services/firebase';
 
 export const Dashboard = ({ products = [] }) => {
   const [usersCount, setTotalUsuarios] = useState(0);
@@ -21,6 +22,7 @@ export const Dashboard = ({ products = [] }) => {
 
         const totalVentasCalculado = ordersSnap.docs.reduce(
           (acc, doc) => acc + (doc.data().total || 0),
+          0
         );
         setTotalVentas(totalVentasCalculado)
       } catch (error) {
