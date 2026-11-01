@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { db, collection, getDocs } from './services/firebase';
 
 // Importación de Componentes Globales
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import Toast from './components/common/Toast';
 
-// Importación de Páginas (TODO)
+// Importación de Páginas 
 import Home from './pages/public/Home'; 
 import Products from './pages/public/Products'; 
 import ProductDetail from './pages/public/ProductDetail'; 
@@ -79,23 +80,27 @@ const INITIAL_PRODUCTS = [
 
 function App() {
 
-    const [products, setProducts] = useState(() => { 
-        try { 
-            const savedProducts = localStorage.getItem('manga_products'); 
-            return savedProducts ? JSON.parse(savedProducts) : [];
-        } catch (error) { 
-            console.error('Error cargando inventario:', error); 
-            return []; 
-        } 
-    });
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => { 
-        try { 
-            localStorage.setItem('manga_products', JSON.stringify(products)); 
-        } catch (error) { 
-            console.error('Error guardando inventario:', error); 
-        } 
-    }, [products]);
+        const fetchProducts = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'productos'));
+                const loadedProducts = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setProducts(loadedProducts);
+            } catch (error) {
+                console.error('Error cargando productos de Firebase:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     const [toast, setToast] = useState({ message: '', type: 'success' });
 

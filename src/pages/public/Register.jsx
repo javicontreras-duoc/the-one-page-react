@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { db, collection, addDoc, getDocs } from '../../services/firebase';
 
 // Regiones y Comunas de Chile
 const REGIONES_COMUNAS = {
@@ -141,6 +142,7 @@ const validarRutChileno = (rutCompleto) => {
 
 export const Register = ({ showToast }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -204,7 +206,7 @@ export const Register = ({ showToast }) => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validarFormulario()) {
@@ -212,8 +214,39 @@ export const Register = ({ showToast }) => {
       return;
     }
 
-    if (showToast) showToast('¡Cuenta creada exitosamente! Inicia sesión ahora.', 'success');
-    navigate('/login');
+    setLoading(true);
+
+    try {
+      const usersCollection = collection(db, 'usuarios');
+      const snapshot = await getDocs(usersCollection);
+      const yaExiste = snapshot.docs.some((doc) => doc.data().email?.toLowerCase() === formData.email.toLocaleLowerCase());
+
+      if (yaExiste) {
+        if (showToast) showToast('Ya existe una cuenta con este correo electrónico', 'error');
+        setLoading(false);
+        return;
+      }
+
+      const nuevoUsuario = {
+        nombre: `${formData.nombre} ${formData.apellido}`, 
+        email: formData.email, 
+        rut: formData.rut, 
+        rol: 'Cliente', 
+        region: formData.region, 
+        comuna: formData.comuna, 
+        fechaCreacion: new Date().toISOString()
+      };
+
+      await addDoc(usersCollection, nuevoUsuario);
+
+      if (showToast) showToast('¡Cuenta creada exitosamente en Firebase!', 'success');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error al registrar usuario en Firebase:', error);
+      if (showToast) showToast('Error al conectar con la base de datos', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Obtener lista segura de comunas para la región seleccionada
@@ -347,8 +380,9 @@ export const Register = ({ showToast }) => {
                   <button
                     type="submit"
                     className="btn btn-warning btn-lg w-100 rounded-pill fw-bold text-dark shadow-sm hover-amber"
+                    disabled={loading}
                   >
-                    Registrar Cuenta
+                    {loading ? 'Guardando en la nube...' : 'Registrar Cuenta'}
                   </button>
                 </div>
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { db, collection, addDoc } from '../../services/firebase';
 
 // Datos dinámicos de Regiones y Comunas de Chile
 const REGIONES_COMUNAS = {
@@ -177,7 +178,7 @@ export const Checkout = ({ showToast }) => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const handleSubmitOrder = (e) => {
+  const handleSubmitOrder = async (e) => {
     e.preventDefault();
 
     if (!validarFormulario()) {
@@ -199,17 +200,16 @@ export const Checkout = ({ showToast }) => {
     };
 
     try {
-      const existingOrders = JSON.parse(localStorage.getItem('manga_orders') || '[]');
-      existingOrders.push(orderData);
-      localStorage.getItem('manga_orders', JSON.stringify(existingOrders));
+      const docRef = await addDoc(collection(db, 'ordenes'), orderData);
+      orderData.id = docRef.id;
+
+      clearCart();
+      if (showToast) showToast('¡Orden registrada en Firebase!', 'success'); 
+      navigate('/exito', { state: { order: orderData } });
     } catch (error) {
-      console.error('Error al guardar la orden en historial:', error);
+      console.error('Error al registrar la orden:', error);
+      if (showToast) showToast('Hubo un problema al procesar la compra', 'error');
     }
-
-    clearCart();
-    if (showToast) showToast('¡Pedido realizado con éxito!', 'success');
-
-    navigate('/exito', { state: { order: orderData } });
   };
 
   // Si el carrito está vacío o no es válido

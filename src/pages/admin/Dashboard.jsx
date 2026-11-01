@@ -2,49 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../components/admin/Sidebar';
 import MetricCard from '../../components/admin/MetricCard';
+import { collection } from 'firebase/firestore';
 
 export const Dashboard = ({ products = [] }) => {
-  const [usersCount, setUsersCount] = useState(0);
-  const [totalSales, setTotalSales] = useState(0);
-  const [ordersCount, setOrdersCount] = useState(0);
+  const [usersCount, setTotalUsuarios] = useState(0);
+  const [totalVentas, setTotalVentas] = useState(0);
+  const [ordersCount, setTotalOrdenes] = useState(0);
 
   useEffect(() => {
-    // 1. Obtener la cantidad real de usuarios registrados desde LocalStorage
-    try {
-      const savedUsers = localStorage.getItem('system_users');
-      if (savedUsers) {
-        const parsedUsers = JSON.parse(savedUsers);
-        setUsersCount(Array.isArray(parsedUsers) ? parsedUsers.length : 0);
-      } else {
-        setUsersCount(0);
-      }
-    } catch (e) {
-      console.error('Error leyendo usuarios de LocalStorage:', e);
-      setUsersCount(0);
-    }
+    const loadDashboardData = async () => {
+      try {
+        const [usersSnap, ordersSnap] = await Promise.all([
+          getDocs(collection(db, 'usuarios')),
+          getDocs(collection(db, 'ordenes'))
+        ]);
 
-    // 2. Obtener el total real acumulado de ventas desde el historial de órdenes
-    try {
-      const savedOrders = localStorage.getItem('manga_orders');
-      if (savedOrders) {
-        const parsedOrders = JSON.parse(savedOrders);
-        if (Array.isArray(parsedOrders)) {
-          setOrdersCount(parsedOrders.length);
-          const accumulatedTotal = parsedOrders.reduce((acc, order) => acc + (Number(order.total) || 0), 0);
-          setTotalSales(accumulatedTotal);
-        } else {
-          setTotalSales(0);
-          setOrdersCount(0);
-        }
-      } else {
-        setTotalSales(0);
-        setOrdersCount(0);
+        setTotalUsuarios(usersSnap.size);
+
+        const totalVentasCalculado = ordersSnap.docs.reduce(
+          (acc, doc) => acc + (doc.data().total || 0),
+        );
+        setTotalVentas(totalVentasCalculado)
+      } catch (error) {
+        console.error('Error cargando métricas:', error);
       }
-    } catch (e) {
-      console.error('Error leyendo órdenes de LocalStorage:', e);
-      setTotalSales(0);
-      setOrdersCount(0);
-    }
+    };
+
+    loadDashboardData();
   }, []);
 
   // Filtrado reactivo de productos con stock crítico (<= 5 unidades)
@@ -94,7 +78,7 @@ export const Dashboard = ({ products = [] }) => {
 
           <MetricCard
             title={`Ventas Totales (${ordersCount} órdenes)`}
-            value={formatCLP(totalSales)}
+            value={formatCLP(totalVentas)}
             color="dark"
             icon="💰"
           />
