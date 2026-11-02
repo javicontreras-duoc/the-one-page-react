@@ -25,6 +25,7 @@ export const Dashboard = ({ products = [] }) => {
           0
         );
         setTotalVentas(totalVentasCalculado)
+        setTotalOrdenes(ordersSnap.size);
       } catch (error) {
         console.error('Error cargando métricas:', error);
       }
@@ -79,7 +80,7 @@ export const Dashboard = ({ products = [] }) => {
           />
 
           <MetricCard
-            title={`Ventas Totales (${ordersCount} órdenes)`}
+            title={`Ventas Totales: ${ordersCount} venta(s)`}
             value={formatCLP(totalVentas)}
             color="dark"
             icon="💰"

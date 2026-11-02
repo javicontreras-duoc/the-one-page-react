@@ -105,7 +105,8 @@ export const AdminUsers = ({ showToast }) => {
         } else if (!validarEmail(formData.email)) {
             err.email = 'Formato de correo no válido.';
         }
-        if (!formData.rut.trim()) err.rut = 'El RUN/RUT es obligatorio.';
+        if (!formData.rut.trim()) err.rut = 'El RUT es obligatorio.';
+        if (!formData.telefono.trim()) err.telefono = 'El teléfono es obligatorio.';
 
         setErrors(err);
         return Object.keys(err).length === 0;
@@ -299,7 +300,7 @@ export const AdminUsers = ({ showToast }) => {
 
                                             <div className="col-md-6">
                                                 <label className="form-label fw-semibold">
-                                                    RUN (*)
+                                                    RUT (*)
                                                     <input
                                                         type="text"
                                                         className={`form-control ${errors.rut ? 'is-invalid' : ''}`}
@@ -314,15 +315,16 @@ export const AdminUsers = ({ showToast }) => {
 
                                             <div className="col-md-6">
                                                 <label className="form-label fw-semibold">
-                                                    Teléfono 
+                                                    Teléfono (*)
                                                     <input
                                                         type="tel"
-                                                        className="form-control"
+                                                        className={`form-control ${errors.telefono ? 'is-invalid' : ''}`}
                                                         value={formData.telefono}
                                                         placeholder="+56 9 1234 5678"
                                                         onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                                                         required
                                                     />
+                                                    {errors.telefono && <div className="invalid-feedback">{errors.telefono}</div>}
                                                 </label>
                                             </div>
 

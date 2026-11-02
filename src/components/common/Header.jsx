@@ -1,11 +1,31 @@
-import React from "react";
-import { Link, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 
 export const Header = () => {
     //obtener cantidad total de artículos desde el estado global
+    const navigate = useNavigate();
+    const [currentUser, setCurrentUser] = useState(null);
     const { cart } = useCart();
     const totalItems = cart ? cart.reduce((acc, item) => acc + item.cantidad, 0) : 0;
+
+    useEffect(() => {
+        try {
+            const sesionGuardada = localStorage.getItem('active_user');
+            setCurrentUser(sesionGuardada ? JSON.parse(sesionGuardada) : null);
+        } catch (error) {
+            setCurrentUser(null);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('active_user');
+        setCurrentUser(null);
+        navigate('/');
+        window.location.reload();
+    };
+
+    const esAdmin = currentUser?.rol === 'Administrador' || currentUser?.email?.includes('admin');
 
     return (
         <header className="header-main bg-dark sticky-top shadow-sm border-bottom border-warning border-3">
@@ -76,17 +96,35 @@ export const Header = () => {
                     </ul>
                 </nav>
 
-                {/* 3. Acciones de usuario, admin y carrito */}
-                <div className="user-cart-actions d-flex align-items-center gap-2">
-                    {/* Botón directo al Dashboard de Administración */}
-                    <Link to="/admin/dashboard" className="btn btn-link btn-sm text-light text-decoration-none fw-semibold">
-                        Registrar usuario
-                    </Link>
+                <div className="d-flex align-items-center gap-2">
+                    {esAdmin && (
+                        <Link to="/admin/dashboard" className="btn btn-warning btn-sm rounded-pill fw-bold px-3">
+                            ⚙️ Dashboard
+                        </Link>
+                    )}
 
-                {/* Botón Carrito con Contador Dinámico */}
-                <Link to="/carrito" className="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 rounded-pill px-3 ms-2">
-                    🛒 Cart <span className="badge bg-dark text-warning ms-1">{totalItems}</span>
-                </Link>
+                    {currentUser ? (
+                        <div className="d-flex align-items-center gap-2">
+                            <span className="text-light small d-none d-md-inline">
+                                Hola, <strong className="text-warning">{currentUser.nombre?.split(' ')[0] || 'Usuario'}</strong>
+                            </span>
+                            <button 
+                                onClick={handleLogout}
+                                className="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold"
+                                title="Cerrar sesión"
+                            >
+                                🚪 Cerrar Sesión
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" className="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold">
+                            👤 Iniciar Sesión
+                        </Link>
+                    )}
+
+                    <Link to="/carrito" className="btn btn-warning btn-sm rounded-pill px-3 fw-bold">
+                        🛒 Carrito
+                    </Link>
                 </div>
             </div>
         </header>

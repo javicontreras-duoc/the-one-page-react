@@ -5,17 +5,17 @@ export const Blogs = () => {
     const blogsList = [ 
         { 
             id: 1, 
-            titulo: 'Los 5 Mangas Shonen Más Vendidos de la Década', 
+            titulo: 'Los 5 Mangas Shonen Más Vendidos de 2026', 
             resumen: 'Descubre qué series han roto récords de ventas a nivel mundial y por qué siguen cautivando a millones de lectores.', 
             fecha: '20 Octubre, 2026', 
-            imagen: '' 
+            imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSScB68Fhrk2b7OY13dAbdF8-Do23rcQ7rlFfZvKShyV3J4PiFU4gd9Do2d&s=10' 
         }, 
         { 
             id: 2, 
             titulo: 'Guía para Principiantes: Diferencias entre Shonen, Seinen y Shojo', 
             resumen: 'Aprende a identificar las demografías del manga y encuentra el género perfecto para iniciar tu colección.', 
             fecha: '15 Octubre, 2026', 
-            imagen: '' 
+            imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18xfPmkKpdYmnxSeQt9BMTJAbwCJnuktJIMb00YZGNw&s=10' 
         } 
     ];
 

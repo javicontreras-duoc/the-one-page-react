@@ -112,7 +112,7 @@ const REGIONES_COMUNAS = {
   ]
 };
 
-// Algoritmo Módulo 11 para validación de RUN chileno
+// Algoritmo Módulo 11 para validación de RUT chileno
 const validarRutChileno = (rutCompleto) => {
   if (!rutCompleto) return false;
   const limpio = rutCompleto.replace(/[\.\-]/g, '').toUpperCase();
@@ -148,6 +148,7 @@ export const Register = ({ showToast }) => {
     nombre: '',
     apellido: '',
     email: '',
+    telefono: '',
     rut: '',
     password: '',
     confirmPassword: '',
@@ -184,10 +185,12 @@ export const Register = ({ showToast }) => {
     }
 
     if (!formData.rut.trim()) {
-      nuevosErrores.rut = 'El RUN es obligatorio.';
+      nuevosErrores.rut = 'El RUT es obligatorio.';
     } else if (!validarRutChileno(formData.rut)) {
-      nuevosErrores.rut = 'RUN no válido o dígito verificador incorrecto (ej: 12345678K).';
+      nuevosErrores.rut = 'RUT no válido o dígito verificador incorrecto (ej: 12345678K).';
     }
+
+    if (!formData.telefono.trim()) nuevosErrores.telefono = 'El teléfono es obligatorio.';
 
     if (!formData.password) {
       nuevosErrores.password = 'La contraseña es obligatoria.';
@@ -230,6 +233,7 @@ export const Register = ({ showToast }) => {
       const nuevoUsuario = {
         nombre: `${formData.nombre} ${formData.apellido}`, 
         email: formData.email, 
+        telefono: formData.telefono,
         rut: formData.rut, 
         rol: 'Cliente', 
         region: formData.region, 
@@ -269,111 +273,143 @@ export const Register = ({ showToast }) => {
               <div className="row g-3">
                 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Nombre (*)</label>
-                  <input
-                    type="text"
-                    name="nombre"
-                    className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
-                    value={formData.nombre}
-                    onChange={handleChange}
-                  />
+                  <label className="form-label fw-semibold text-dark">
+                    Nombre (*)
+                    <input
+                      type="text"
+                      name="nombre"
+                      className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
+                      value={formData.nombre}
+                      onChange={handleChange}
+                    />
                   {errors.nombre && <div className="invalid-feedback fw-bold">{errors.nombre}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Apellido (*)</label>
-                  <input
-                    type="text"
-                    name="apellido"
-                    className={`form-control ${errors.apellido ? 'is-invalid' : ''}`}
-                    value={formData.apellido}
-                    onChange={handleChange}
-                  />
+                  <label className="form-label fw-semibold text-dark">
+                    Apellido (*)
+                    <input
+                      type="text"
+                      name="apellido"
+                      className={`form-control ${errors.apellido ? 'is-invalid' : ''}`}
+                      value={formData.apellido}
+                      onChange={handleChange}
+                    />
                   {errors.apellido && <div className="invalid-feedback fw-bold">{errors.apellido}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Correo Electrónico (*)</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    placeholder="usuario@duoc.cl"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
+                  <label className="form-label fw-semibold text-dark">
+                    Correo Electrónico (*)
+                    <input
+                      type="email"
+                      name="email"
+                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                      placeholder="usuario@duoc.cl"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
                   {errors.email && <div className="invalid-feedback fw-bold">{errors.email}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">RUN / RUT (*)</label>
-                  <input
-                    type="text"
-                    name="rut"
-                    className={`form-control ${errors.rut ? 'is-invalid' : ''}`}
-                    placeholder="12345678K (Sin puntos ni guión)"
-                    value={formData.rut}
-                    onChange={handleChange}
-                  />
-                  {errors.rut && <div className="invalid-feedback fw-bold">{errors.rut}</div>}
+                  <label className="form-label fw-semibold text-dark">
+                    RUT (*)
+                    <input
+                      type="text"
+                      name="rut"
+                      className={`form-control ${errors.rut ? 'is-invalid' : ''}`}
+                      placeholder="12345678K (Sin puntos ni guión)"
+                      value={formData.rut}
+                      onChange={handleChange}
+                    />
+                    {errors.rut && <div className="invalid-feedback">{errors.rut}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Contraseña (*)</label>
-                  <input
-                    type="password"
-                    name="password"
-                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    placeholder="4 a 10 caracteres"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
+                  <label className="form-label fw-semibold">
+                    Teléfono (*)
+                    <input
+                      type="tel"
+                      name="telefono"
+                      className={`form-control ${errors.telefono ? 'is-invalid' : ''}`}
+                      value={formData.telefono}
+                      placeholder="+56 9 1234 5678"
+                      onChange={handleChange}
+                      required
+                    />
+                    {errors.telefono && <div className="invalid-feedback">{errors.telefono}</div>}
+                  </label>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-dark">
+                    Contraseña (*)
+                    <input
+                      type="password"
+                      name="password"
+                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                      placeholder="4 a 10 caracteres"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
                   {errors.password && <div className="invalid-feedback fw-bold">{errors.password}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Confirmar Contraseña (*)</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                  />
+                  <label className="form-label fw-semibold text-dark">
+                    Confirmar Contraseña (*)
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                    />
                   {errors.confirmPassword && <div className="invalid-feedback fw-bold">{errors.confirmPassword}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Región (*)</label>
-                  <select
-                    name="region"
-                    className={`form-select ${errors.region ? 'is-invalid' : ''}`}
-                    value={formData.region}
-                    onChange={handleChange}
-                  >
-                    <option value="">-- Seleccionar --</option>
-                    {Object.keys(REGIONES_COMUNAS).map((reg) => (
-                      <option key={reg} value={reg}>{reg}</option>
-                    ))}
-                  </select>
+                  <label className="form-label fw-semibold text-dark">
+                    Región (*)
+                    <select
+                      name="region"
+                      className={`form-select ${errors.region ? 'is-invalid' : ''}`}
+                      value={formData.region}
+                      onChange={handleChange}
+                    >
+                      <option value="">-- Seleccionar --</option>
+                      {Object.keys(REGIONES_COMUNAS).map((reg) => (
+                        <option key={reg} value={reg}>{reg}</option>
+                      ))}
+                    </select>
                   {errors.region && <div className="invalid-feedback fw-bold">{errors.region}</div>}
+                  </label>
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold text-dark">Comuna (*)</label>
-                  <select
-                    name="comuna"
-                    className={`form-select ${errors.comuna ? 'is-invalid' : ''}`}
-                    value={formData.comuna}
-                    onChange={handleChange}
-                    disabled={!formData.region || comunasDisponibles.length === 0}
-                  >
-                    <option value="">-- Seleccionar --</option>
-                    {comunasDisponibles.map((com) => (
-                      <option key={com} value={com}>{com}</option>
-                    ))}
-                  </select>
+                  <label className="form-label fw-semibold text-dark">
+                    Comuna (*)
+                    <select
+                      name="comuna"
+                      className={`form-select ${errors.comuna ? 'is-invalid' : ''}`}
+                      value={formData.comuna}
+                      onChange={handleChange}
+                      disabled={!formData.region || comunasDisponibles.length === 0}
+                    >
+                      <option value="">-- Seleccionar --</option>
+                      {comunasDisponibles.map((com) => (
+                        <option key={com} value={com}>{com}</option>
+                      ))}
+                    </select>
                   {errors.comuna && <div className="invalid-feedback fw-bold">{errors.comuna}</div>}
+                  </label>
                 </div>
 
                 <div className="col-12 pt-3">

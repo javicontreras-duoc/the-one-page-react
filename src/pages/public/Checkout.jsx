@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { db, collection, addDoc } from '../../services/firebase';
@@ -123,19 +123,50 @@ export const Checkout = ({ showToast }) => {
   const navigate = useNavigate();
 
   // Estado del formulario de Despacho y Pago
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    rut: '',
-    telefono: '',
-    region: '',
-    comuna: '',
-    direccion: '',
-    depto: '',
-    metodoPago: 'webpay',
-    notas: ''
+  const [formData, setFormData] = useState(() => { 
+    try {
+      const sesion = localStorage.getItem('active_user');
+      if (sesion) {
+        const user = JSON.parse(sesion);
+        const partesNombre = (user.nombre || '').trim().split(' ');
+        const nombre = partesNombre[0] || '';
+        const apellido = partesNombre.slice(1).join(' ') || '';
+
+        return {
+          nombre: nombre,
+          apellido: apellido,
+          email: user.email || '',
+          rut: user.rut || '',
+          telefono: user.telefono || '',
+          region: user.region || '',
+          comuna: user.comuna || '',
+          direccion: user.direccion || '',
+          metodoPago: 'webpay',
+        }
+      }
+    } catch (error) {
+      console.error('Error leyendo active\_user:', error);
+    }
+
+    return {
+      nombre: '',
+      apellido: '',
+      email: '',
+      rut: '',
+      telefono: '',
+      region: '',
+      comuna: '',
+      direccion: '',
+      metodoPago: 'webpay',
+    }
   });
+
+  useEffect(() => {
+    const sesion = localStorage.getItem('active_user');
+    if (sesion && showToast) {
+      showToast('Datos de envío precargados desde tu cuenta', 'success');
+    }
+  }, []);
 
   const [errors, setErrors] = useState({});
 
@@ -283,7 +314,7 @@ export const Checkout = ({ showToast }) => {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">RUT / RUN (*)</label>
+                  <label className="form-label fw-semibold">RUT (*)</label>
                   <input
                     type="text"
                     name="rut"

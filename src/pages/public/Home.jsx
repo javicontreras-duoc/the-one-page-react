@@ -19,7 +19,7 @@ export const Home = ({ products = [], showToast }) => {
                                 Tu Manga Favorito a Un Clic de Distancia
                             </h1>
                             <p className="fs-5 text-light mb-4">
-                                Explora el catálogo más completo de tomos Shonen, Seinen, Shojo y Josei en Chile. Envíos rápidos y 100% garantizados.
+                                Explora el catálogo más completo de tomos de diversas categorías en Chile. Envíos rápidos y 100% garantizados.
                             </p>
                             <div className="d-flex gap-3 flex-wrap">
                                 <Link to="/productos" className="btn btn-warning btn-lg rounded-pill fw-bold text-dark px-4 shadow">

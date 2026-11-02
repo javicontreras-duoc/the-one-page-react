@@ -118,16 +118,16 @@ export const ProductDetail = ({ products = [], showToast }) => {
                             <div className="bg-light p-3 rounded mb-4">
                                 <div className="row g-2 text-dark small">
                                     <div className="col-6">
-                                        <srtrong>Autor:</srtrong> {product.autor || 'Mangaka Oficial'}
+                                        <strong>Autor:</strong> {product.autor || 'Mangaka Oficial'}
                                     </div>
                                     <div className="col-6">
-                                        <srtrong>Editorial:</srtrong> {product.editorial || 'IVREA / Panini'}
+                                        <strong>Editorial:</strong> {product.editorial || 'IVREA / Panini'}
                                     </div>
                                     <div className="col-6">
-                                        <srtrong>Idioma:</srtrong> Español
+                                        <strong>Idioma:</strong> Español
                                     </div>
                                     <div className="col-6">
-                                        <srtrong>Formato:</srtrong> Tapa Blanda (Tankōbon)
+                                        <strong>Formato:</strong> Tapa Blanda (Tankōbon)
                                     </div>
                                 </div>
                             </div>

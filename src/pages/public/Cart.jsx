@@ -5,35 +5,35 @@ import CartItem from '../../components/store/CartItem';
 import ConfirmModal from '../../components/common/ConfirmModal';
 
 export const Cart = ({ showToast }) => {
-    const { cart, clearCart, removeFromCart, getCartTotal } = useCart();
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
+  const { cart, clearCart, removeFromCart, getCartTotal } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-    const formatCLP = (amount) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
+  const formatCLP = (amount) =>
+  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
 
-    // Apertura del modal de confirmación
-    const handleAskDelete = (product) => {
-        setSelectedProduct(product);
-        setShowModal(true);
-    };
+  // Apertura del modal de confirmación
+  const handleAskDelete = (product) => {
+      setSelectedProduct(product);
+      setShowModal(true);
+  };
 
-    // Confirmar eliminación en el modal
-    const handleConfirmDelete = () => {
-        if (selectedProduct) {
-            removeFromCart(selectedProduct.id);
-            if (showToast) {
-                showToast(`"${selectedProduct.nombre}" fue eliminado del carrito`, 'warning');
-            }
-            setSelectedProduct(null);
-            setShowModal(false);
-        }
-    };
+  // Confirmar eliminación en el modal
+  const handleConfirmDelete = () => {
+      if (selectedProduct) {
+          removeFromCart(selectedProduct.id);
+          if (showToast) {
+              showToast(`"${selectedProduct.nombre}" fue eliminado del carrito`, 'warning');
+          }
+          setSelectedProduct(null);
+          setShowModal(false);
+      }
+  };
 
-    if (cart.length === 0) {
-        return (
-            <div className="container text-center">
+  if (cart.length === 0) {
+    return (
+      <div className="container text-center">
         <div className="card shadow-sm p-5 max-w-600 mx-auto border-0">
           <div className="fs-1 mb-3">🛒</div>
           <h2 className="fw-bold text-dark mb-2">Tu carrito está vacío</h2>
@@ -89,7 +89,7 @@ export const Cart = ({ showToast }) => {
 
         {/* Resumen de Compra (4 Columnas) */}
         <div className="col-12 col-lg-4">
-          <div className="card shadow-sm border-0 bg-white p-4 sticky-top" style={{ top: '90px' }}>
+          <div className="card shadow-sm border-0 bg-white p-4 sticky-top">
             <h4 className="fw-bold border-bottom pb-3 mb-3 text-dark">Resumen del Pedido</h4>
 
             <div className="d-flex justify-content-between mb-2 text-muted">

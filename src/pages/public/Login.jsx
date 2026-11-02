@@ -1,130 +1,140 @@
 import React, { useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
+import { db, collection, getDocs } from '../../services/firebase';
 
-export const Login = ({ showToast }) => {
+export const Login = ({ showToast, setCurrentUser }) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         email: '', 
         password: '',
     });
 
-    const [errors, setErrors] = useState({});
+    const [error, setError] = useState({});
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({...formData, [name]: value});
-
-        if (errors[name]) {
-            setErrors({...errors, [name]: ''});
-        }
+        setFormData({ 
+            ...formData, 
+            [e.target.name]: e.target.value 
+        }); setError('');
     };
 
-    const validarFormulario = () => {
-        const nuevosErrores = {};
-
-        // 1. Validación de Correo Electrónico
-        if (!formData.email.trim()) {
-            nuevosErrores.email = 'El correo electrónico es obligatorio.';
-        } else { 
-            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regexEmail.test(formData.email)) {
-                nuevosErrores.email = 'Ingrese un formato de correo válido (ej: usuario@gmail.cl).';
-            }
-        }
-
-        // 2. Validación de Contraseña (entre 4 y 10 caracteres)
-        if (!formData.password) {
-            nuevosErrores.password = 'La contraseña es obligatoria.';
-        } else if (formData.password.length < 4 || formData.password.length > 10) {
-            nuevosErrores.password = 'La contraseña debe tener entre 4 y 10 caracteres.';
-        }
-
-        setErrors(nuevosErrores);
-        return Object.keys(nuevosErrores).length === 0;
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validarFormulario()) {
-            if (showToast) showToast('Corrige los errores antes de iniciar sesión', 'error');
-            return;
+        if (!formData.email.trim() || !formData.password.trim()) { 
+            setError('Por favor, ingresa tu correo y contraseña.'); 
+            return; 
         }
 
-        // Simulación de autenticación exitosa
-        if (showToast) showToast('¡Bienvenido a The One Page!', 'success');
+        setLoading(true);
 
-        // Redirección según rol
-        if (formData.email.toLowerCase().includes('admin')) {
-            navigate('/admin/dashboard');
-        } else {
-            navigate('/');
+        try {
+            const usersSnapshot = await getDocs(collection(db, 'usuarios'));
+            const emailIngresado = formData.email.trim().toLowerCase();
+
+            const usuarioEncontrado = usersSnapshot.docs
+                .map((doc) => ({ id: doc.id, ...doc.data() }))
+                .find((u) => u.email?.toLowerCase() === emailIngresado);
+
+            const esAdminPorCorreo = emailIngresado.includes('admin');
+            const esAdminPorRol = usuarioEncontrado && usuarioEncontrado.rol === 'Administrador';
+
+            if (!usuarioEncontrado && !esAdminPorCorreo) {
+                setError('No encontramos una cuenta registrada con este correo electrónico.');
+                if (showToast) showToast('Usuario no encontrado', 'error');
+                setLoading(false);
+                return;
+            }
+
+            const sesionUsuario = usuarioEncontrado || {
+                email: emailIngresado, 
+                nombre: 'Administrador Maestro', 
+                rol: 'Administrador'
+            }
+
+            localStorage.setItem('active_user', JSON.stringify(sesionUsuario));
+            if (setCurrentUser) setCurrentUser(sesionUsuario);
+
+            if (esAdminPorRol || esAdminPorCorreo) {
+                if (showToast) showToast(`¡Bienvenido(a) Administrador(a) ${sesionUsuario.nombre}!`, 'success');
+                navigate('/admin/dashboard');
+            } else {
+                if (showToast) showToast(`¡Hola de nuevo, ${sesionUsuario.nombre}!`, 'success');
+                navigate('/productos');
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error al iniciar sesión:', err);
+            setError('Hubo un problema al conectar con el servidor.');
+            if (showToast) showToast('Error al conectar con la base de datos', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="container">
+        <div className="container py-5">
             <div className="row justify-content-center">
-                <div className="col-12 col-md-8 col-lg-5">
-                    <div className="card shadow-sm border-0 bg-white p-4 p-md-5">
-                        {/* Encabezado */}
-                        <div className="text-center mb-4">
-                            <img
-                                src="/img/logo.png" 
-                                alt="The One Page Logo" 
-                                style={{ height: '60px', objectFit: 'contain' }} 
-                                className="mb-2"
-                            />
-                            <h2 className="fw-extrabold text-dark">Iniciar sesión</h2>
-                            <p className="text-muted small">Ingresa tus credenciales para acceder a tu cuenta</p>
+                <div className="col-md-5">
+                    <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
+                        <div className="card-header bg-dark text-white text-center py-4 border-bottom border-warning border-3">
+                            <h3 className="fw-bold text-warning mb-0">Iniciar Sesión</h3>
+                            <p className="text-light small mb-0 mt-1">Accede a tu cuenta de The One Page</p>
                         </div>
 
-                        {/* Formulario */}
-                        <form onSubmit={handleSubmit} noValidate>
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold text-dark">
-                                    Correo Electrónico (*)
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                                    placeholder="ejemplo@gmail.cl"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                />
-                                {errors.email && <div lassName="invalid-feedback fw-bold">{errors.email}</div>}
+                        <div className="card-body p-4 p-md-5">
+                            {/* Formulario */}
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold text-dark">
+                                        Correo Electrónico (*)
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="form-control"
+                                            placeholder="usuario@duoc.cl o admin@tienda.cl"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                        <div className="form-text small">
+                                            Si tu correo contiene <code>admin</code> o tienes rol Administrador, entrarás al Dashboard.
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="form-label fw-semibold text-dark">
+                                        Contraseña (*)
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            className="form-control"
+                                            placeholder="••••••••"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </label>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-warning w-100 fw-bold py-2 rounded-pill text-dark shadow-sm"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Comprobando rol...' : 'Ingresar'}
+                                </button>
+                            </form>
+
+                            <div className="text-center mt-4 pt-3 border-top">
+                                <span className="text-muted small">¿Aún no tienes una cuenta? </span>
+                                <Link to="/registro" className="text-warning fw-bold small text-decoration-none">
+                                    Regístrate aquí
+                                </Link>
                             </div>
-
-                            <div className="mb-4">
-                                <label className="form-label fw-semibold text-dark">
-                                    Contraseña (*)
-                                </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                                    placeholder="4 a 10 caracteres"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                />
-                                {errors.password && <div lassName="invalid-feedback fw-bold">{errors.password}</div>}
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-warning btn-lg w-100 rounded-pill fw-bold text-dark shadow-sm mb-3 hover-amber"
-                            >
-                                Ingresar a Mi Cuenta
-                            </button>
-                        </form>
-
-                        <div className="text-center border-top pt-3 mt-2">
-                            <span className="text-muted small">¿Aún no tienes una cuenta? </span>
-                            <Link to="/registro" className="fw-bold text-dark text-decoration-none small">
-                                Regístrate aquí
-                            </Link>
                         </div>
                     </div>
                 </div>
