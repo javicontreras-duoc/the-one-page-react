@@ -1,59 +1,64 @@
 import React from 'react'; 
 import { Link } from 'react-router-dom';
+import { BLOGS_DATA } from '../../data/blogsData';
 
 export const Blogs = () => {
-    const blogsList = [ 
-        { 
-            id: 1, 
-            titulo: 'Los 5 Mangas Shonen Más Vendidos de 2026', 
-            resumen: 'Descubre qué series han roto récords de ventas a nivel mundial y por qué siguen cautivando a millones de lectores.', 
-            fecha: '20 Octubre, 2026', 
-            imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSScB68Fhrk2b7OY13dAbdF8-Do23rcQ7rlFfZvKShyV3J4PiFU4gd9Do2d&s=10' 
-        }, 
-        { 
-            id: 2, 
-            titulo: 'Guía para Principiantes: Diferencias entre Shonen, Seinen y Shojo', 
-            resumen: 'Aprende a identificar las demografías del manga y encuentra el género perfecto para iniciar tu colección.', 
-            fecha: '15 Octubre, 2026', 
-            imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18xfPmkKpdYmnxSeQt9BMTJAbwCJnuktJIMb00YZGNw&s=10' 
-        } 
-    ];
-
     return (
-        <div className="container">
-            <div className="bg-dark text-white p-4 rounded-3 mb-4 border-start border-warning border-5">
-                <h1 className="fw-extrabold text-warning mb-1">📰 Noticias y Curiosidades</h1>
-                <p className="text-light mb-0 small">Novedades sobre el mundo del manga, recomendaciones e historias.</p>
-            </div>
+        <div className="bg-light min-vh-100 py-5">
+            <div className="container">
+                <div className="text-center mb-5">
+                    <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-2">
+                        Comunidad & Lectura
+                    </span>
+                    <h1 className="fw-extrabold text-dark display-5">
+                        📰 Artículos, Reseñas y Guías
+                    </h1>
+                    <p className="text-muted lead">
+                        Análisis editoriales, historia del manga y consejos para coleccionistas.
+                    </p>
+                </div>
 
-            <div className="row g-4">
-                {blogsList.map((blog) => (
-                    <div key={blog.id} className="col-12 col-md-6">
-                        <div className="card h-100 shadow-sm border-0 bg-white overflow-hidden">
-                            <img 
-                                src={blog.imagen} 
-                                alt={blog.titulo} 
-                                className="card-img-top" 
-                                style={{ height: '200px', 
-                                objectFit: 'cover' }} 
-                            />
-                            <div className="card-body p-4 d-flex flex-column justify-content-between">
-                                <div>
-                                    <small className="text-warning bg-dark px-2 py-1 rounded fw-bold mb-2 d-inline-block">
-                                        {blog.fecha}
-                                    </small>
-                                    <h4 className="fw-bold text-dark">{blog.titulo}</h4>
-                                    <p className="text-muted small">{blog.resumen}</p>
+                <div className="row g-4">
+                    {BLOGS_DATA.map((blog) => (
+                        <div key={blog.id} className="col-md-6">
+                            <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                                <img
+                                    src={blog.portada}
+                                    alt={blog.titulo}
+                                    className="w-100"
+                                    style={{ height: '220px', objectFit: 'cover' }}
+                                />
+                                <div className="card-body p-4 d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <span className="badge bg-secondary small">
+                                            {blog.categoria}
+                                        </span>
+                                    </div>
+
+                                    <h2 className="h5 fw-bold text-dark mb-2">
+                                        {blog.titulo}
+                                    </h2>
+                                    <p className="text-muted small flex-grow-1">
+                                        {blog.resumen}
+                                    </p>
+                                    <div className="d-flex justify-content-between align-items-center pt-3 border-top mt-3">
+                                        <span className="text-muted small">
+                                            Por {blog.autor}
+                                        </span>
+                                        <Link 
+                                            to={`/blog/${blog.id}`}
+                                            className="btn btn-warning btn-sm rounded-pill fw-bold px-3 text-dark"
+                                        >
+                                            Leer artículo →
+                                        </Link>
+                                    </div>
                                 </div>
-                                <Link to={`/blog/${blog.id}`} className="btn btn-outline-dark btn-sm fw-bold rounded-pill align-self-start mt-3">
-                                    Leer Artículo Completo →
-                                </Link>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
-        </div> 
+                    ))}
+                </div>
+            </div> 
+        </div>
     );
 };
 
