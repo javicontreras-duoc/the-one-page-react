@@ -18,16 +18,12 @@ describe('Pruebas Unitarias - <ProductCard />', () => {
   });
 
   afterEach(() => {
-    if (root) { 
-      act(() => { 
-        root.unmount(); 
-      }); 
-      root = null; 
-    } 
-    if (container) { 
-      container.remove(); 
-      container = null; 
-    } 
+    act(() => { 
+      root.unmount(); 
+    }); 
+    root = null; 
+    container.remove(); 
+    container = null; 
   });
 
   // Test 1: Renderizado de Props y Título
@@ -81,27 +77,50 @@ describe('Pruebas Unitarias - <ProductCard />', () => {
 
   // Test 3: Disparo de Evento al Añadir al Carrito
   it('Test 3: Debe ejecutar la función de agregar al carrito al hacer clic en el botón', () => {
-    let fueAgregado = false;
+    let mensajeToast = null;
+    let tipoToast = null;
 
-    const handleAddToCartMock = () => {
-      fueAgregado = true;
+    const mockProduct = {
+      id: 'mng-ds-01', 
+      nombre: 'Demon Slayer Vol. 01', 
+      categoria: 'Shonen', 
+      precio: 8490, 
+      stock: 10, 
+      imagen: ''
+    };
+
+    const mockShowToast = (message, type) => {
+      mensajeToast = message;
+      tipoToast = type;
     };
 
     act(() => {
       root.render(
-        <button type="button" className="btn btn-warning" onClick={handleAddToCartMock}>
-          🛒 Añadir al carrito
-        </button>
+        <MemoryRouter>
+          <CartProvider>
+            <ProductCard 
+              product={mockProduct} 
+              showToast={mockShowToast} 
+            />
+          </CartProvider>
+        </MemoryRouter>
       );
     });
 
-    const button = container.querySelector('button');
+    const botones = Array.from(container.querySelectorAll('button'));
 
+    const botonAgregar = botones.find(b =>
+      b.textContent.includes('Añadir')
+    );
+
+    expect(botonAgregar).not.toBeNull();
+    
     act(() => {
-      button.click();
+      botonAgregar.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(fueAgregado).toBe(true);
+    expect(mensajeToast).toBe('¡"Demon Slayer Vol. 01" fue añadido al carrito!');
+    expect(tipoToast).toBe('success');
   });
 
   // Test 4: Detección de Stock Crítico (<= 5 unidades)

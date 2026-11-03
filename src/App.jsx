@@ -27,57 +27,6 @@ import Dashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/AdminProducts'; 
 import AdminUsers from './pages/admin/AdminUsers';
 
-// Catálogo inicial
-const INITIAL_PRODUCTS = [
-    {
-        id: 1, 
-        codigo: 'MNG-001', 
-        nombre: 'One Piece Vol. 100', 
-        categoria: 'Shonen', 
-        precio: 8990, 
-        stock: 12, 
-        autor: 'Eiichiro Oda', 
-        editorial: 'IVREA', 
-        descripcion: 'El viaje de Luffy y los Sombrero de Paja llega a un hito histórico en la batalla por Wano.', 
-        imagen: ''
-    },
-    {
-        id: 2, 
-        codigo: 'MNG-002', 
-        nombre: 'Berserk Vol. 01', 
-        categoria: 'Seinen', 
-        precio: 12990, 
-        stock: 3, // Stock Crítico 
-        autor: 'Kentaro Miura', 
-        editorial: 'Panini Manga', 
-        descripcion: 'La obra maestra de la fantasía oscura. Sigue la historia del Espadachín Negro, Guts.', 
-        imagen: ''
-    },
-    {
-        id: 3, 
-        codigo: 'MNG-003', 
-        nombre: 'Demon Slayer Vol. 01', 
-        categoria: 'Shonen', 
-        precio: 8490, stock: 15, 
-        autor: 'Koyoharu Gotouge', 
-        editorial: 'IVREA', 
-        descripcion: 'Tanjiro Kamado inicia su viaje para convertirse en cazador de demonios y curar a su hermana Nezuko.',
-        imagen: ''
-    },
-    {
-        id: 4, 
-        codigo: 'MNG-004', 
-        nombre: 'Fruit Basket Vol. 01', 
-        categoria: 'Shojo', 
-        precio: 9990, 
-        stock: 4, // Stock Crítico }
-        autor: 'Natsuki Takaya', 
-        editorial: 'Panini Manga', 
-        descripcion: 'Tohru Honda descubre el secreto de la familia Sohma y la maldición del zodiaco chino.',
-        imagen: ''
-    }
-]
-
 function App() {
 
     const [products, setProducts] = useState([]);

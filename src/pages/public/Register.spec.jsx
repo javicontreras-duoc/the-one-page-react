@@ -1,4 +1,6 @@
 import React from 'react';
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
 
 // Algoritmo Módulo 11 para validación de RUN Chileno
 export const validarRutChileno = (rutCompleto) => {
@@ -36,8 +38,8 @@ const validarEmail = (email) => {
 
 describe('Pruebas Unitarias - Validaciones de Formulario y Reglas de Negocio', () => {
 
-  // Test 8: Algoritmo Módulo 11 para RUNs Válidos e Inválidos
-  it('Test 8: Debe validar correctamente el RUN chileno usando el algoritmo Módulo 11', () => {
+  // Test 13: Algoritmo Módulo 11 para RUNs Válidos e Inválidos
+  it('Test 13: Debe validar correctamente el RUN chileno usando el algoritmo Módulo 11', () => {
     // RUNs válidos sintácticamente
     expect(validarRutChileno('11.111.111-1')).toBe(true);
     expect(validarRutChileno('12.345.678-5')).toBe(true);
@@ -49,8 +51,8 @@ describe('Pruebas Unitarias - Validaciones de Formulario y Reglas de Negocio', (
     expect(validarRutChileno('abc')).toBe(false);
   });
 
-  // Test 9: Validación de Correo Electrónico
-  it('Test 9: Debe validar el formato correcto de correo electrónico', () => {
+  // Test 14: Validación de Correo Electrónico
+  it('Test 14: Debe validar el formato correcto de correo electrónico', () => {
     expect(validarEmail('javiera@duoc.cl')).toBe(true);
     expect(validarEmail('estudiante@profesor.duoc.cl')).toBe(true);
 
@@ -58,8 +60,8 @@ describe('Pruebas Unitarias - Validaciones de Formulario y Reglas de Negocio', (
     expect(validarEmail('usuario@domain')).toBe(false);
   });
 
-  // Test 10: Validación de Rango de Contraseña (4 a 10 caracteres)
-  it('Test 10: Debe verificar que la contraseña cumpla con la regla de 4 a 10 caracteres', () => {
+  // Test 15: Validación de Rango de Contraseña (4 a 10 caracteres)
+  it('Test 15: Debe verificar que la contraseña cumpla con la regla de 4 a 10 caracteres', () => {
     const esPasswordValida = (pass) => pass.length >= 4 && pass.length <= 10;
 
     expect(esPasswordValida('1234')).toBe(true);
