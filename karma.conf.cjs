@@ -1,10 +1,11 @@
 module.exports = function (config) {
   config.set({
-    frameworks: ['jasmine'],
+    basePath: '',
+    frameworks: ['jasmine', 'webpack'],
 
     files: [
-      { pattern: 'src/**/*.spec.jsx', watched: false },
-      { pattern: 'src/**/*.spec.js', watched: false }
+      { pattern: 'src/**/*.spec.jsx'},
+      { pattern: 'src/**/*.spec.js'}
     ],
 
     preprocessors: {
@@ -22,7 +23,10 @@ module.exports = function (config) {
             use: {
               loader: 'babel-loader',
               options: {
-                presets: ['@babel/preset-env', '@babel/preset-react']
+                presets: ['@babel/preset-env', 
+                  ['@babel/preset-react', { runtime: 'automatic' }]
+                ],
+                plugins: ['babel-plugin-istanbul']
               }
             }
           },
@@ -34,14 +38,18 @@ module.exports = function (config) {
       },
       resolve: {
         extensions: ['.js', '.jsx']
-      }
+      },
+      devtool: 'inline-source-map'
     },
 
     reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-      type: 'html',
-      dir: 'coverage/'
+      dir: 'coverage/',
+      reporters: [
+        { type: 'html', subdir: 'html' },
+        { type: 'text-summary' }
+      ]
     },
 
     port: 9876,

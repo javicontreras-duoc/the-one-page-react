@@ -98,7 +98,7 @@ describe('Pruebas Unitarias - <ProductCard />', () => {
     const button = container.querySelector('button');
 
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      button.click();
     });
 
     expect(fueAgregado).toBe(true);
