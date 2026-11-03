@@ -65,7 +65,7 @@ export const ProductDetail = ({ products = [], showToast }) => {
                     {/* Columna Izquierda: Portada del Manga */}
                     <div className="col-12 col-md-5 text-center d-flex align-items-center justify-content-center bg-light rounded p-4">
                         <img
-                            src={product.imagen || '[suspicious link removed]'}
+                            src={product.imagen}
                             alt={product.nombre}
                             className="img-fluid rounded shadow-sm"
                             style={{ maxHeight: '420px', objectFit: 'contain' }}

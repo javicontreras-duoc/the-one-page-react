@@ -446,7 +446,7 @@ export const Checkout = ({ showToast }) => {
 
           {/* Columna Derecha: Resumen de la Orden (5 cols) */}
           <div className="col-12 col-lg-5">
-            <div className="card shadow-sm border-0 p-4 sticky-top bg-white" style={{ top: '90px' }}>
+            <div className="card shadow-sm border-0 p-4 sticky bg-white" style={{ top: '90px' }}>
               <h4 className="fw-bold border-bottom pb-3 mb-3 text-dark">Detalle del Pedido</h4>
 
               {/* Lista compacta de items */}

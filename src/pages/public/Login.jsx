@@ -60,6 +60,7 @@ export const Login = ({ showToast, setCurrentUser }) => {
             if (esAdminPorRol || esAdminPorCorreo) {
                 if (showToast) showToast(`¡Bienvenido(a) Administrador(a) ${sesionUsuario.nombre}!`, 'success');
                 navigate('/admin/dashboard');
+                window.location.reload();
             } else {
                 if (showToast) showToast(`¡Hola de nuevo, ${sesionUsuario.nombre}!`, 'success');
                 navigate('/productos');

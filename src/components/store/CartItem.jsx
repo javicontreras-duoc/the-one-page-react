@@ -20,7 +20,7 @@ export const CartItem = ({ item, onAskDelete }) => {
             {/* Imagen compacta manteniendo la proporción del catálogo */}
             <td className="align-middle text-center" style={{ width: '90px' }}>
                 <img
-                src={item.imagen || '[suspicious link removed]'}
+                src={item.imagen}
                 alt={item.nombre}
                 className="img-thumbnail bg-light p-1"
                 style={{ width: '75px', height: '110px', objectFit: 'contain' }}

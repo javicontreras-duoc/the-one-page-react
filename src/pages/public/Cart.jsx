@@ -89,7 +89,7 @@ export const Cart = ({ showToast }) => {
 
         {/* Resumen de Compra (4 Columnas) */}
         <div className="col-12 col-lg-4">
-          <div className="card shadow-sm border-0 bg-white p-4 sticky-top">
+          <div className="card shadow-sm border-0 bg-white p-4">
             <h4 className="fw-bold border-bottom pb-3 mb-3 text-dark">Resumen del Pedido</h4>
 
             <div className="d-flex justify-content-between mb-2 text-muted">

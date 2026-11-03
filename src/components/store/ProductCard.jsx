@@ -25,7 +25,7 @@ export const ProductCard = ({ product, showToast }) => {
                 {/* Imagen de la Portada (Altura compacta de 160px) */}
                 <Link to={`/producto/${product.id}`} className="pt-3 px-3 d-block text-decoration-none">
                     <img 
-                        src={product.imagen || '[suspicious link removed]'} 
+                        src={product.imagen} 
                         alt={product.nombre} 
                         className="card-img-top mx-auto img-fluid"
                         style={{ height: '160px', objectFit: 'contain' }} 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../../components/store/ProductCard';
 
 export const Home = ({ products = [], showToast }) => {
-    const featuredProducts = products.slice(0,4);
+    const featuredProducts = products.slice(0,6);
 
     return (
         <div className="home-page">
